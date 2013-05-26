@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sea Shell</string>
+    <string name="menu_settings">Configurações</string>
+    <string name="NoSensor">Sensor de proximidade não localizado.</string>
+    <string name="orientation">Aproxime o telefone de sua orelha \n e escute o som das ondas.</string>
+    <string name="sensorOn">Ligado</string>
+    <string name="sensorOff">Desligado</string>
+    <string name="Close">Fechar</string>
+    
+</resources>
