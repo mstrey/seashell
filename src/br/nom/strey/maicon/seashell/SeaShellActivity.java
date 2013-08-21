@@ -27,8 +27,8 @@ public class SeaShellActivity extends Activity {
 	SensorManager mySensorManager;
 	Sensor myProximitySensor;
 	Boolean isPlayingWaveSounds;
-	Integer userVolumn = 20;			// inicializada com valor inválido (máximo 15)
-	final static Integer MY_VOL = 10; 	// inicializada com volume padrão das ondas
+	Integer userVolumn = 20;			// inicializada com valor invÃ¡lido (mÃ¡ximo 15)
+	final static Integer MY_VOL = 10; 	// inicializada com volume padrÃ£o do Ã¡udio das ondas
  
  	public void onStart(){
  		super.onStart();
@@ -44,15 +44,13 @@ public class SeaShellActivity extends Activity {
     	setContentView(R.layout.activity_main);
         
     	myAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-    	myAudioManager.setMode(AudioManager.MODE_IN_CALL); // configura saída de áudio para p speaker, ou saída de "conversação".
+    	myAudioManager.setMode(AudioManager.MODE_IN_CALL); // configura saÃ­da de Ã¡udio para o speaker, ou saÃ­da de "conversaÃ§Ã£o".
     	
-    	// salva volume do aparelho somente quando o app é carregado para não ser sobrescrito pelo volume da app.
-    	// a variável é iniciada em 20 para saber que é a primeira execução;
+    	// salva volume do aparelho somente quando o app Ã© carregado para nÃ£o ser sobrescrito pelo volume da app.
+    	// a variÃ¡vel foi iniciada em 20 para saber que Ã© a primeira execuÃ§Ã£o;
     	// o valor do volume varia entre 0 e 15.
         if (userVolumn == 20) {
         	userVolumn = myAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        } else {
-        	// o programa já está em memória e não é necessário salvar novamente o volume.
         }
         
         myAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, MY_VOL, AudioManager.MODE_NORMAL);
@@ -60,17 +58,15 @@ public class SeaShellActivity extends Activity {
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        wavePlayer = MediaPlayer.create(getApplicationContext(), R.raw.bg); // cria um player
+        wavePlayer = MediaPlayer.create(getApplicationContext(), R.raw.bg);
         wavePlayer.setLooping(true);
-        wavePlayer.setVolume(1.0f, 1.0f); // volume do player no máximo
-        isPlayingWaveSounds = false; // controla se o player está rodando
+        wavePlayer.setVolume(1.0f, 1.0f); // configura o volume do player no mÃ¡ximo
+        isPlayingWaveSounds = false;
         
         mySensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-        myProximitySensor = mySensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY); // cria instancia do sensor de proximidade
+        myProximitySensor = mySensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         
-        // alterada ordem de testes pois a maioria dos aparelhos disponíves possui sensor de proximidade.
-        if (myProximitySensor != null){ // verifica existência do sensor de proximidade no aparelho
-        	// cria um listener para o sensor de proximidade 
+        if (myProximitySensor != null){
 	        mySensorManager.registerListener(proximitySensorListener,
 	        		 myProximitySensor,
 	        		 SensorManager.SENSOR_DELAY_NORMAL);
@@ -88,18 +84,16 @@ public class SeaShellActivity extends Activity {
 	                });
 	         
 	         AlertDialog alert = builder.create();
-	         alert.show(); // exibe mensagem informando que sem sensor o programa não funciona
+	         alert.show();
         }
         
         if (isConnected(getBaseContext())){ // se estiver conectado exibe anuncio do AdMob
             AdView adView = (AdView)findViewById(R.id.adView);
-            // Carrega um anúncio genérico para testes que não gera monetização.
+            // Carrega um anÃºncio genÃ©rico para testes que nÃ£o gera monetizaÃ§Ã£o.
             //adView.loadAd(new AdRequest().addTestDevice("A783C1868D1441A3CC47E7681566D639"));
             
-            // carrega anúncio válido que gera monetização
+            // carrega anÃºncio vÃ¡lido que gera monetizaÃ§Ã£o
             adView.loadAd(new AdRequest());
-        } else {
-        	// não existe conexão e não tem como exibir propaganda.
         }
     }
     
@@ -115,39 +109,26 @@ public class SeaShellActivity extends Activity {
 		  public void onSensorChanged(SensorEvent event) {
 		   // TODO Auto-generated method stub
 			  
-			  // event.values[0] retorna a proximidade da orelha ao sensor em centimetros.
-			  // ProximitySensor.getMaximumRange() retorna a distância máxima que o sensor pode capturar.
-			  // Quando o sensor retornar a distância máxima considera-se que nada está próximo.
-			  // Alterada ordem de testes pois durante a execução do app o aparelho passa mais tempo 
-			  // perto da orelha do que longe. Assim que o usuário afasta da orelha ele fecha o app.
-			  
 			  final boolean isCloser = myProximitySensor.getMaximumRange() != event.values[0];
-			  // incluida a variável acima para tornar mais fácil a compreensão
-			  if (isCloser){ 
-				  // quando detecta proximidade
-			      
+			  if (isCloser){
 				  // verifica se existe fone de ouvido conectado
 				  IntentFilter ifPlugPhone = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
 			      boolean phoneIsPluged = ifPlugPhone.getAction(0).equalsIgnoreCase(Intent.ACTION_HEADSET_PLUG);
 			      
-			      // Se existir algum fone conectado desativa saída de áudio pelo speaker
-			      // Se não existir um fone plugado ativa saída de áudio pelo speaker
+			      // Se existir algum fone conectado desativa saÃ­da de Ã¡udio pelo speaker
+			      // Se nÃ£o existir um fone plugado ativa saÃ­da de Ã¡udio pelo speaker
 			      myAudioManager.setSpeakerphoneOn(!phoneIsPluged);
 			      
 			      if (!isPlayingWaveSounds){
 			    	  wavePlayer.start();
-			      } else {
-			    	  // player já está executando
 			      }
 			      
 			      isPlayingWaveSounds = true;
 			  } else {
-				  // quando não detecta proximidade
+				  // quando nÃ£o detecta proximidade
 				  
 				  if (isPlayingWaveSounds){
 					  wavePlayer.pause();
-				  } else {
-					  //player já está pausado.
 				  }
 				  
 				  isPlayingWaveSounds = false;
@@ -155,7 +136,6 @@ public class SeaShellActivity extends Activity {
 		 }
     };
     
-    // função renomeada de sair() para deixar mais claro objetivo.
     private void exitApp(){
     	
     	wavePlayer.stop();
@@ -168,8 +148,6 @@ public class SeaShellActivity extends Activity {
         Log.i("MEDIA_VOLUME", "set to previous: "+userVolumn);
         myAudioManager.setSpeakerphoneOn(false);
         
-        // muito importante fazer o unregister para o listener não 
-        // continuar executando após fechar o app
     	mySensorManager.unregisterListener(proximitySensorListener);
    }
 
@@ -183,15 +161,12 @@ public class SeaShellActivity extends Activity {
 	   exitApp();
    }
  
-   // função renomeada de Conectado() para deixar mais claro objetivo.
    public static boolean isConnected(Context context) {
 	   
        try {
            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
            
-           // alterada ordem dos testes de conexão pois acredita-se que é mais provável que o usuários esteja conectado através de WIFI.
-           // incluída duas novas variáveis para tornar melhor a compreensão do código
-           final boolean isWifiConnected = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected(); 
+           final boolean isWifiConnected = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
            final boolean isMobileConnected = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected(); 
 
            if (isWifiConnected) {
@@ -204,8 +179,8 @@ public class SeaShellActivity extends Activity {
                
            } else {
                    
-        	   Log.e("isConnected","Status de conexão Wifi: "+isWifiConnected);
-               Log.e("isConnected","Status de conexão 3G: "+isMobileConnected);
+        	   Log.e("isConnected","Status de conexÃ£o Wifi: "+isWifiConnected);
+               Log.e("isConnected","Status de conexÃ£o 3G: "+isMobileConnected);
                return false;
                
            }
